@@ -18,15 +18,15 @@ import android.widget.Button;
 import android.widget.TextView;
 
 public class MainActivity extends Activity {
-	
+
 	public static final String EXTRA_MESSAGE = "com.example.myfirstapp.MESSAGE";
-	
+
 	private WifiManager mainWifi;
 	private TextView gainz;
 	private TextView ssid;
 	private Button resetButton;
 	private ArrayList<String> gainzList;
-	
+
 	private static final String TAG = "MainActivity";
 
 	@Override
@@ -34,7 +34,7 @@ public class MainActivity extends Activity {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 		Log.d(TAG, "HI");
-		
+
 		gainzList = new ArrayList<String>();
 		gainz = (TextView) findViewById(R.id.gainz);
 		ssid = (TextView) findViewById(R.id.ssid);
@@ -48,7 +48,8 @@ public class MainActivity extends Activity {
 				}
 			}
 		);
-		mainWifi = (WifiManager) getSystemService(Context.WIFI_SERVICE); 
+
+		mainWifi = (WifiManager) getSystemService(Context.WIFI_SERVICE);
 		WifiReceiver receiverWifi = new WifiReceiver();
 		Thread t = new Thread() {
 			public void run() {
@@ -68,7 +69,7 @@ public class MainActivity extends Activity {
 		//mainWifi.startScan();
 		registerReceiver(receiverWifi, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
 	}
-	
+
 	class WifiReceiver extends BroadcastReceiver {
 		public void onReceive(Context context, Intent intent) {
 			List<ScanResult> wifiList = mainWifi.getScanResults();
@@ -95,7 +96,7 @@ public class MainActivity extends Activity {
 		getMenuInflater().inflate(R.menu.activity_main, menu);
 		return true;
 	}
-	
+
 	public void sendMessage(View view){
 		Intent intent = new Intent(this, DisplayMessageActivity.class);
 		//EditText editText = (EditText) findViewById(R.id.edit_message);
