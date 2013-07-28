@@ -50,3 +50,7 @@ post '/android' do
   pp wifi_locater.wifi_data
   "hi"
 end
+
+get '/' do
+  "blah"
+end
