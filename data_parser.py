@@ -1,7 +1,7 @@
 import json
 import math
 import pprint
-data_path = "data.json"
+data_path = "data_new.json"
 
 class SSIDData:
     def __init__(self, name):
@@ -51,8 +51,9 @@ for line in open(data_path):
 medians = []
 for name, data in ssid_datas.items():
     strength_to_feet = [(v, k) for k, v in data.get_median_strengths().items()]
+    strength_to_feet.sort(key=lambda x:x[1])
     print("ssid: " + name)
-    print("\n".join([str(-k)+" "+str(v) for (k,v) in strength_to_feet]))
+    print("\n".join([str(k)+" "+str(v) for (k,v) in strength_to_feet]))
     medians.append((name, strength_to_feet))
 #medians = [(name, data.get_median_strengths().items()) for name, data in ssid_datas.items()]
 
