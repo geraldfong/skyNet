@@ -1,10 +1,12 @@
 import web
 import json
+import urllib2
 
 urls = (
     '/android', 'android',
     '/light', 'light',
-    '/imu', 'imu'
+    '/imu', 'imu',
+    '/test', 'test'
     )
 app = web.application(urls, globals())
 
@@ -67,6 +69,11 @@ class imu:
   def POST(self):
     print web.data()
     return "Success!"
+
+class test:
+  def GET(self):
+    urllib2.urlopen('http://localhost:9999/switchDeskRight')
+    return 'Hello, '
 
 if __name__ == "__main__":
   app.run()
