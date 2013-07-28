@@ -47,11 +47,6 @@ for ft, values in strength_data.items():
 medians = dict([(ft, sorted(values)[len(values)/2]) for ft, values in strength_data.items()])
 print(medians)
 
-tuple_values = [(ft, median) for ft, median in medians.items()]
-print(tuple_values)
-for k,v in medians.items():
-    print(str(v) + " " + str(k))
-
 #print("Averages: ")
 #print(averaged_data)
 #
