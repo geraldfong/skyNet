@@ -1,14 +1,16 @@
 package com.skynet.wifimonitor;
 
 import android.app.Activity;
-import android.content.BroadcastReceiver;
+import android.app.AlertDialog;
 import android.content.Context;
 import android.content.IntentFilter;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
+import android.view.View;
 import android.widget.Button;
+import android.widget.EditText;
 
 public class MainActivity extends Activity {
 	private static String TAG = "MainActivity";
@@ -16,10 +18,16 @@ public class MainActivity extends Activity {
 
 	/* he's mine! */
 	public WifiManager myWifiMan;
-	private WifiReceiver receiver;
+	private WifiReceiver_DataCollection receiver;
 	private Button requestSender;
 	private WebRequester myRequester;
 	private Thread scannerThread;
+
+	private EditText numFeetField;
+	private Button start;
+	private Button send;
+
+	private boolean paused;
 
 	@Override
 	protected void onCreate(Bundle savedInstanceState) {
@@ -28,12 +36,44 @@ public class MainActivity extends Activity {
 		myRequester = new WebRequester();
 		myWifiMan = (WifiManager) getSystemService(Context.WIFI_SERVICE);
 
-		// but I don't want to share him!
-		receiver = new WifiReceiver(myWifiMan);
+		numFeetField = (EditText) findViewById(R.id.numFeet);
+		start = (Button) findViewById(R.id.start);
+		send = (Button) findViewById(R.id.send);
+		setListeners();
 
-		scannerThread = new WifiScannerThread();
-		registerReceiver(receiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));					
-		scannerThread.start();
+		// but I don't want to share him!
+		receiver = new WifiReceiver_DataCollection(myWifiMan);
+		registerReceiver(receiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
+	}
+
+	private void setListeners() {
+		start.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				scannerThread = new WifiScannerThread();
+				scannerThread.start();
+				start.setText("Running...");
+				start.setEnabled(false);
+			}
+		});
+
+		send.setOnClickListener(new View.OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				if (scannerThread != null && scannerThread.isAlive()) {
+					try {
+						receiver.sendData(Integer.parseInt(numFeetField.getText().toString()));
+					} catch (NumberFormatException e) {
+						new AlertDialog.Builder(MainActivity.this).setMessage("Couldn't parse the feet! Make sure you have a number there.").show();
+						return;
+					}
+				}
+				scannerThread.interrupt();
+				paused = true;
+				start.setText("Start");
+				start.setEnabled(true);
+			}
+		});
 	}
 
 	@Override
@@ -45,25 +85,23 @@ public class MainActivity extends Activity {
 
 	@Override
 	public void onPause() {
-		if (!checkInBackground && scannerThread.isAlive()) {
+		if (!checkInBackground && scannerThread != null && scannerThread.isAlive()) {
 			Log.d(TAG, "Interrupting thread in onPause()");
 			scannerThread.interrupt();
 		}
 		super.onPause();
 	}
-	
+
 	@Override
 	public void onResume() {
-		if (!scannerThread.isAlive()) {
+		if (scannerThread != null && !scannerThread.isAlive() && !paused) {
 			Log.d(TAG, "Starting thread in onResume()");
 			scannerThread = new WifiScannerThread();
 			scannerThread.start();
-		} else {
-			Log.d(TAG, "Thread was not interrupted");
 		}
 		super.onResume();
 	}
-	
+
 	@Override
 	public void onDestroy() {
 		if (scannerThread.isAlive()) {
