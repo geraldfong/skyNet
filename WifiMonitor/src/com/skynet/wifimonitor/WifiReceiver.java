@@ -1,6 +1,7 @@
 package com.skynet.wifimonitor;
 
 import java.util.List;
+import java.util.Locale;
 
 import org.json.JSONArray;
 import org.json.JSONException;
@@ -15,7 +16,7 @@ import android.util.Log;
 
 public class WifiReceiver extends BroadcastReceiver {
 	private static String TAG = "WifiReceiver";
-	private static String url = "http://requestb.in/sxr1q6sx";
+	private static String url = "http://54.241.33.105:8080/android";
 
 	// haha he's also mine!
 	private WifiManager myWifiMan;
@@ -34,20 +35,17 @@ public class WifiReceiver extends BroadcastReceiver {
 
 		try {
 			// unix time
-			data.put("time", System.currentTimeMillis() / 1000L);
+			data.put("time", System.currentTimeMillis());
 	
 			List<ScanResult> theWifis = myWifiMan.getScanResults();
-			JSONArray wifiData = new JSONArray();
+			JSONObject wifiData = new JSONObject();
 			for (ScanResult wifi : theWifis) {
-				JSONObject wifiDatum = new JSONObject();
-				wifiDatum.put("ssid", wifi.SSID);
-				wifiDatum.put("strength", wifi.level);
-				wifiData.put(wifiDatum);
+				if (wifi.SSID.toLowerCase(Locale.US).equals("skynet")) {
+					wifiData.put(wifi.SSID+"", wifi.level);
+				}
 			}
 			data.put("wifiData", wifiData);
 			myRequester.sendPost(url, data.toString());
-			Log.d(TAG, "Sending JSON Data: ");
-			Log.d(TAG, data.toString());
 		} catch (JSONException e) {
 			Log.e(TAG, "Couldn't put JSON data");
 			e.printStackTrace();

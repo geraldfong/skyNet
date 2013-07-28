@@ -12,7 +12,7 @@ import android.widget.Button;
 
 public class MainActivity extends Activity {
 	private static String TAG = "MainActivity";
-	private static boolean checkInBackground = false;
+	private static boolean checkInBackground = true;
 
 	/* he's mine! */
 	public WifiManager myWifiMan;
@@ -74,7 +74,7 @@ public class MainActivity extends Activity {
 	}
 
 	private class WifiScannerThread extends Thread {
-		private static final int intervalMs = 500;
+		private static final int intervalMs = 100;
 		public void run() {
 			Log.d(TAG, "Started WifiScannerThread");
 			while (true) {
