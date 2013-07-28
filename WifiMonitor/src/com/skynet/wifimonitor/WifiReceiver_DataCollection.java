@@ -23,7 +23,7 @@ public class WifiReceiver_DataCollection extends BroadcastReceiver {
 	private WifiManager myWifiMan;
 	private WebRequester myRequester;
 	private ArrayList<JSONObject> currentData;
-	private static String currentSSID = "SKYNET";
+	private static String currentSSID = "skynet";
 
 	public WifiReceiver_DataCollection(WifiManager wifiMan) {
 		myWifiMan = wifiMan;
@@ -48,22 +48,18 @@ public class WifiReceiver_DataCollection extends BroadcastReceiver {
 	@Override
 	public void onReceive(Context ctx, Intent intnt) {
 	/*						^ i hear no vowels is popular */
-		JSONObject datum = new JSONObject();
-
 		try {
 			// unix time
-			datum.put("time", System.currentTimeMillis() / 1000L);
-	
 			List<ScanResult> theWifis = myWifiMan.getScanResults();
 			for (ScanResult wifi : theWifis) {
-				if (wifi.SSID.equals(currentSSID)) {
+				if ((wifi.SSID.toLowerCase(Locale.US)).equals(currentSSID)) {
+					JSONObject datum = new JSONObject();
+					datum.put("time", System.currentTimeMillis() / 1000L);
 					datum.put("ssid", wifi.SSID);
 					datum.put("strength", wifi.level);
-					break;
+					currentData.add(datum);
 				}
 			}
-			Log.d(TAG, "Found data " + datum.toString());
-			currentData.add(datum);
 		} catch (JSONException e) {
 			Log.e(TAG, "Couldn't put JSON data");
 			e.printStackTrace();
