@@ -11,7 +11,6 @@ import android.content.IntentFilter;
 import android.net.wifi.ScanResult;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.Menu;
 import android.view.View;
 import android.widget.Button;
@@ -33,7 +32,6 @@ public class MainActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		Log.d(TAG, "HI");
 
 		gainzList = new ArrayList<String>();
 		gainz = (TextView) findViewById(R.id.gainz);
@@ -54,7 +52,6 @@ public class MainActivity extends Activity {
 		Thread t = new Thread() {
 			public void run() {
 				for(int i = 0; i < 2000; i++) {
-					//Log.d(TAG, "In the loo");
 					try {
 						Thread.sleep(1000);
 					} catch (InterruptedException e) {
@@ -76,7 +73,6 @@ public class MainActivity extends Activity {
 			for(ScanResult scanResult : wifiList) {
 				if (scanResult.SSID.equals("SKYNET")/* || scanResult.SSID.equals("skynet")*/) {
 					ssid.setText(scanResult.SSID);
-					Log.d("achal","hi");
 					if (gainzList.size() < 20) {
 						gainzList.add(scanResult.level+"");
 						gainz.setText(gainzList.get(0));
@@ -84,7 +80,6 @@ public class MainActivity extends Activity {
 							gainz.setText(gainz.getText() + "\n" + gainzList.get(i));
 						}
 					}
-					//Log.d(TAG, scanResult.BSSID);
 				}
 			}
 		}
