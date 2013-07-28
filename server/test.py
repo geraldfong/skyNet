@@ -42,7 +42,15 @@ class android:
       new_wifi_data[ssid] = new_wifi_datum
     print(new_wifi_data)
 
-
+    if 'skynet' in new_wifi_data and 'SKYNET' in new_wifi_data:
+      strength0 = new_wifi_data['skynet']
+      strength1 = new_wifi_data['SKYNET']
+      d = 2
+      # x is distance from skynet to x coordinate
+      x = (strength0 ** 2 - strength1 ** 2 + d**2) / (2 * d)
+      y = (strength0 ** 2 - x ** 2) ** .5
+      datum['x'] = x
+      datum['y'] = y
 
     datum['wifiData'] = new_wifi_data
 
