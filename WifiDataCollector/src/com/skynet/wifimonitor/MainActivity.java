@@ -64,7 +64,7 @@ public class MainActivity extends Activity {
 					try {
 						receiver.sendData(Integer.parseInt(numFeetField.getText().toString()));
 					} catch (NumberFormatException e) {
-						new AlertDialog.Builder(MainActivity.this).setMessage("Couldn't parse the feet! Make sure you have a number there.").show();
+						new AlertDialog.Builder(MainActivity.this).setMessage("Couldnt parse the feet! Make sure you have a number there.").show();
 						return;
 					}
 				}
