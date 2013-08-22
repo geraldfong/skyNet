@@ -30,21 +30,32 @@
         android:text="ft"
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
-    <Button
-        android:id="@+id/send"
+    <EditText
+        android:id="@+id/numMinutes"
+        android:layout_width="100dp"
+        android:layout_height="wrap_content"
+        android:layout_below="@+id/numFeet"
+        android:ems="10"
+        android:inputType="number" />
+
+    <TextView
+        android:id="@+id/textView2"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/start"
-        android:layout_marginLeft="49dp"
-        android:layout_toRightOf="@+id/textView1"
-        android:text="Send" />
+        android:layout_alignBaseline="@+id/numMinutes"
+        android:layout_alignBottom="@+id/numMinutes"
+        android:layout_toRightOf="@+id/numMinutes"
+        android:text="minutes"
+        android:textAppearance="?android:attr/textAppearanceSmall" />
+
 
     <Button
         android:id="@+id/start"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginLeft="49dp"
+        android:layout_toRightOf="@+id/textView1"
         android:layout_alignParentTop="true"
-        android:layout_alignRight="@+id/send"
         android:text="Start" />
 
 </RelativeLayout>
