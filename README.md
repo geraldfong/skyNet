@@ -13,16 +13,11 @@ Next ssh into the server and make sure the server is running. If so, you should 
 
 # Demo:
 
-Wave at computer 1 to turn increase brightness
-Use knob to adjust computer brightness
-Wave at speakers to turn on
-Use knob to adjust speakers
-File transfer from computer 2 to computer 3 using big wave
-Turn on light using push motion
-Computer 1 switch  screen
-Step away and wave to switch them all off
-
-Wave at speakers to increase to max volume.
-Use knob to adjust volume
-Turn on light using push motion
-Switch computer screen
+* Wave at computer 1 to turn increase brightness
+* Use knob to adjust computer brightness
+* Wave at speakers to turn on
+* Use knob to adjust speakers
+* File transfer from computer 2 to computer 3 using big wave
+* Turn on light using push motion
+* Computer 1 switch  screen
+* Step away and wave to switch them all off
