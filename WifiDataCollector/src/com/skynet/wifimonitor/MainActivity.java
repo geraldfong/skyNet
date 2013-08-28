@@ -54,13 +54,13 @@ public class MainActivity extends Activity {
 				try {
 					numFeet = Integer.parseInt(numFeetField.getText().toString());
 				} catch (NumberFormatException e) {
-					new AlertDialog.Builder(MainActivity.this).setMessage("Couldnt parse the feet! Make sure you have a number there.").show();
+					new AlertDialog.Builder(MainActivity.this).setMessage("Couldn't parse the feet! Make sure you have a number there.").show();
 					return;
 				}
 				try {
 					numMin = Integer.parseInt(numMinutesField.getText().toString());
 				} catch (NumberFormatException e) {
-					new AlertDialog.Builder(MainActivity.this).setMessage("Couldnt parse the minutes! Make sure you have a number there.").show();
+					new AlertDialog.Builder(MainActivity.this).setMessage("Couldn't parse the minutes! Make sure you have a number there.").show();
 					return;
 				}
 				scannerThread = new WifiScannerThread();
