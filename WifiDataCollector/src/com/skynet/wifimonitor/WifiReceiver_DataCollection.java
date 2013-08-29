@@ -17,7 +17,8 @@ import android.util.Log;
 
 public class WifiReceiver_DataCollection extends BroadcastReceiver {
 	private static String TAG = "WifiReceiver";
-	private static String url = "http://requestb.in/14wzivk1";
+	private static String url = "http://requestb.in/1ey606r1";
+>>>>>>> Stashed changes
 
 	// haha he's also mine!
 	private WifiManager myWifiMan;
