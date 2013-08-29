@@ -17,26 +17,28 @@ import android.util.Log;
 
 public class WifiReceiver_DataCollection extends BroadcastReceiver {
 	private static String TAG = "WifiReceiver";
-	private static String url = "http://requestb.in/1ey606r1";
->>>>>>> Stashed changes
+	private static String url = "http://requestb.in/1i2r7kn1";
 
 	// haha he's also mine!
 	private WifiManager myWifiMan;
 	private WebRequester myRequester;
 	private ArrayList<JSONObject> currentData;
+	private long startTime;
 	private static String currentSSID = "skynet";
 
 	public WifiReceiver_DataCollection(WifiManager wifiMan) {
 		myWifiMan = wifiMan;
 		myRequester = new WebRequester();
 		currentData = new ArrayList<JSONObject>();
+		startTime = System.currentTimeMillis() / 1000L;
 	}
 
-	public void sendData(int feet) {
+	public void sendData(int feet, int minutes) {
 		Log.d(TAG, "Sending data");
 		JSONObject data = new JSONObject();
 		try {
 			data.put("feet", feet);
+			data.put("minutes", minutes);
 			data.put("data", new JSONArray(currentData));
 		} catch (JSONException e) {
 			Log.e(TAG, "Couldn't put data in json object");

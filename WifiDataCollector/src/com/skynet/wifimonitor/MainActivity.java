@@ -6,6 +6,7 @@ import android.content.Context;
 import android.content.IntentFilter;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
+import android.os.Handler;
 import android.util.Log;
 import android.view.Menu;
 import android.view.View;
@@ -19,13 +20,14 @@ public class MainActivity extends Activity {
 	/* he's mine! */
 	public WifiManager myWifiMan;
 	private WifiReceiver_DataCollection receiver;
-	private Button requestSender;
-	private WebRequester myRequester;
 	private Thread scannerThread;
 
 	private EditText numFeetField;
+	private EditText numMinutesField;
 	private Button start;
-	private Button send;
+	
+	private int numFeet;
+	private int numMin;
 
 	private boolean paused;
 
@@ -33,12 +35,11 @@ public class MainActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		myRequester = new WebRequester();
 		myWifiMan = (WifiManager) getSystemService(Context.WIFI_SERVICE);
 
 		numFeetField = (EditText) findViewById(R.id.numFeet);
+		numMinutesField = (EditText) findViewById(R.id.numMinutes);
 		start = (Button) findViewById(R.id.start);
-		send = (Button) findViewById(R.id.send);
 		setListeners();
 
 		// but I don't want to share him!
@@ -50,28 +51,34 @@ public class MainActivity extends Activity {
 		start.setOnClickListener(new View.OnClickListener() {
 			@Override
 			public void onClick(View v) {
+				try {
+					numFeet = Integer.parseInt(numFeetField.getText().toString());
+				} catch (NumberFormatException e) {
+					new AlertDialog.Builder(MainActivity.this).setMessage("Couldn't parse the feet! Make sure you have a number there.").show();
+					return;
+				}
+				try {
+					numMin = Integer.parseInt(numMinutesField.getText().toString());
+				} catch (NumberFormatException e) {
+					new AlertDialog.Builder(MainActivity.this).setMessage("Couldn't parse the minutes! Make sure you have a number there.").show();
+					return;
+				}
 				scannerThread = new WifiScannerThread();
 				scannerThread.start();
 				start.setText("Running...");
 				start.setEnabled(false);
-			}
-		});
-
-		send.setOnClickListener(new View.OnClickListener() {
-			@Override
-			public void onClick(View v) {
-				if (scannerThread != null && scannerThread.isAlive()) {
-					try {
-						receiver.sendData(Integer.parseInt(numFeetField.getText().toString()));
-					} catch (NumberFormatException e) {
-						new AlertDialog.Builder(MainActivity.this).setMessage("Couldnt parse the feet! Make sure you have a number there.").show();
-						return;
+				
+				Handler handler = new Handler();
+				handler.postDelayed(new Runnable() {
+					@Override
+					public void run() {
+						receiver.sendData(numFeet, numMin);
+						scannerThread.interrupt();
+						paused = true;
+						start.setText("Start");
+						start.setEnabled(true);
 					}
-				}
-				scannerThread.interrupt();
-				paused = true;
-				start.setText("Start");
-				start.setEnabled(true);
+				}, numMin * 60 * 1000L);
 			}
 		});
 	}
