@@ -11,12 +11,12 @@ app = web.application(urls, globals())
 
 class switchDeskLeft:
   def GET(self):
-    os.system("osascript -e 'tell application \"System Events\"' -e 'key down {command}' -e 'keystroke (key code 123)' -e 'key up {command}' -e 'end tell'")
+    os.system("osascript -e 'tell application \"System Events\"' -e 'key down {control}' -e 'keystroke (key code 123)' -e 'key up {control}' -e 'end tell'")
     return "SUCCESS"
 
 class switchDeskRight:
   def GET(self):
-    os.system("osascript -e 'tell application \"System Events\"' -e 'key down {command}' -e 'keystroke (key code 124)' -e 'key up {command}' -e 'end tell'")
+    os.system("osascript -e 'tell application \"System Events\"' -e 'key down {control}' -e 'keystroke (key code 124)' -e 'key up {control}' -e 'end tell'")
     return "SUCCESS"
 
 class nextSlide:
@@ -25,9 +25,12 @@ class nextSlide:
     return "SUCCESS"
 
 class changeVolume:
+
   def GET(self):
-    volume = web.input(volume = "3").volume
-    os.system("osascript -e 'set volume " + volume + "'")
+    volume = web.input(volume=None).volume
+    if volume is None:
+      return "Must provide volume parameter, ie '/changeVolume?volume=3.2'"
+    os.system("osascript -e 'set volume %s'" % volume)
 
     return "SUCCESS"
 
