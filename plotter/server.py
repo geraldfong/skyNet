@@ -9,7 +9,7 @@ def hello_world():
   return 'Hello World!\n'
 
 @app.route('/data', methods=['POST'])
-def hande_data():
+def handle_data():
   json_data = request.form['data']
   decoded = json.loads(json_data)
 
