@@ -1,5 +1,4 @@
-from flask import Flask
-from flask import request
+from flask import request, Flask
 from pymongo import MongoClient
 import json
 
@@ -16,9 +15,16 @@ def hande_data():
   sensor_type = decoded['sensor_type']
   value = decoded['value']
   timestamp = decoded['timestamp']
+  experiment = decoded['experiment']
+
   db = client['sensor_db']
   sensor_collection = db['sensor_data']
-  document_data = {'sensor_type': sensor_type, 'value': value, 'timestamp': timestamp}
+  document_data = {
+    'sensor_type': sensor_type,
+    'value': value,
+    'timestamp': timestamp,
+    'experiment': experiment
+  }
   sensor_collection.insert(document_data) 
   return "OK"
 
