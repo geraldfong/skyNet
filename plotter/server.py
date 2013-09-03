@@ -4,33 +4,17 @@ import json
 
 app = Flask(__name__)
 
-@app.route('/')
-def hello_world():
-  return 'Hello World!\n'
-
 @app.route('/data', methods=['POST'])
 def handle_data():
   json_data = request.form['data']
   decoded = json.loads(json_data)
 
-  expected_keys = ('sensor_type', 'value', 'timestamp', 'experiment')
+  expected_keys = ('sensor_type', 'sensor_id', 'value', 'timestamp', 'experiment')
   if any(key not in decoded for key in expected_keys):
-    return 'ERROR: Malformed json; json needs to have %s\n' % (' '.join(expected_keys))
+    return 'ERROR: Malformed json; json needs to have [%s]\n' % (' '.join(expected_keys))
 
-  sensor_type = decoded['sensor_type']
-  value = decoded['value']
-  timestamp = decoded['timestamp']
-  experiment = decoded['experiment']
-
-  db = client['sensor_db']
-  sensor_collection = db['sensor_data']
-  document_data = {
-    'sensor_type': sensor_type,
-    'value': value,
-    'timestamp': timestamp,
-    'experiment': experiment
-  }
-  sensor_collection.insert(document_data) 
+  sensor_collection = client['sensor_db']['sensor_data']
+  sensor_collection.insert(decoded) 
   return "OK\n"
 
 if __name__ == '__main__':
