@@ -20,14 +20,14 @@ public class WifiReceiver_DataCollection extends BroadcastReceiver {
 	private static String url = "http://requestb.in/1i2r7kn1";
 
 	// haha he's also mine!
-	private WifiManager myWifiMan;
+	private WifiManager wifiManager;
 	private WebRequester myRequester;
 	private ArrayList<JSONObject> currentData;
 	private long startTime;
 	private static String currentSSID = "skynet";
 
-	public WifiReceiver_DataCollection(WifiManager wifiMan) {
-		myWifiMan = wifiMan;
+	public WifiReceiver_DataCollection(WifiManager wifiManager) {
+		this.wifiManager = wifiManager;
 		myRequester = new WebRequester();
 		currentData = new ArrayList<JSONObject>();
 		startTime = System.currentTimeMillis() / 1000L;
@@ -49,18 +49,20 @@ public class WifiReceiver_DataCollection extends BroadcastReceiver {
 	}
 
 	@Override
-	public void onReceive(Context ctx, Intent intnt) {
-	/*						^ i hear no vowels is popular */
+	public void onReceive(Context context, Intent intent) {
 		try {
 			// unix time
-			List<ScanResult> theWifis = myWifiMan.getScanResults();
-			for (ScanResult wifi : theWifis) {
+			List<ScanResult> wifis = wifiManager.getScanResults();
+			for (ScanResult wifi : wifis) {
 				if ((wifi.SSID.toLowerCase(Locale.US)).equals(currentSSID)) {
 					JSONObject datum = new JSONObject();
-					datum.put("time", System.currentTimeMillis() / 1000L);
-					datum.put("ssid", wifi.SSID);
-					datum.put("strength", wifi.level);
+					datum.put("timestamp", System.currentTimeMillis() / 1000L);
+					//datum.put("experiment", );
+					datum.put("sensor_id", wifi.SSID);
+					datum.put("value", wifi.level);
+					datum.put("sensor_type", "wifi");
 					currentData.add(datum);
+					
 				}
 			}
 		} catch (JSONException e) {

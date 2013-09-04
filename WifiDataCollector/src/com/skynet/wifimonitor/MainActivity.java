@@ -17,16 +17,15 @@ public class MainActivity extends Activity {
 	private static String TAG = "MainActivity";
 	private static boolean checkInBackground = false;
 
-	/* he's mine! */
-	public WifiManager myWifiMan;
-	private WifiReceiver_DataCollection receiver;
+	public WifiManager wifiManager;
+	private WifiReceiver wifiReceiver;
 	private Thread scannerThread;
 
-	private EditText numFeetField;
+	private EditText experimentField;
 	private EditText numMinutesField;
 	private Button start;
 	
-	private int numFeet;
+	private String experiment;
 	private int numMin;
 
 	private boolean paused;
@@ -35,16 +34,15 @@ public class MainActivity extends Activity {
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-		myWifiMan = (WifiManager) getSystemService(Context.WIFI_SERVICE);
+		wifiManager = (WifiManager) getSystemService(Context.WIFI_SERVICE);
 
-		numFeetField = (EditText) findViewById(R.id.numFeet);
+		experimentField = (EditText) findViewById(R.id.experiment);
 		numMinutesField = (EditText) findViewById(R.id.numMinutes);
 		start = (Button) findViewById(R.id.start);
 		setListeners();
 
-		// but I don't want to share him!
-		receiver = new WifiReceiver_DataCollection(myWifiMan);
-		registerReceiver(receiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
+		wifiReceiver = new WifiReceiver(wifiManager);
+		registerReceiver(wifiReceiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
 	}
 
 	private void setListeners() {
@@ -52,9 +50,9 @@ public class MainActivity extends Activity {
 			@Override
 			public void onClick(View v) {
 				try {
-					numFeet = Integer.parseInt(numFeetField.getText().toString());
+					experiment = experimentField.getText().toString();
 				} catch (NumberFormatException e) {
-					new AlertDialog.Builder(MainActivity.this).setMessage("Couldn't parse the feet! Make sure you have a number there.").show();
+					new AlertDialog.Builder(MainActivity.this).setMessage("Couldn't parse the experiment name. Make sure it is a string.").show();
 					return;
 				}
 				try {
@@ -63,6 +61,7 @@ public class MainActivity extends Activity {
 					new AlertDialog.Builder(MainActivity.this).setMessage("Couldn't parse the minutes! Make sure you have a number there.").show();
 					return;
 				}
+				wifiReceiver.setExperiment(experiment);
 				scannerThread = new WifiScannerThread();
 				scannerThread.start();
 				start.setText("Running...");
@@ -72,7 +71,6 @@ public class MainActivity extends Activity {
 				handler.postDelayed(new Runnable() {
 					@Override
 					public void run() {
-						receiver.sendData(numFeet, numMin);
 						scannerThread.interrupt();
 						paused = true;
 						start.setText("Start");
@@ -129,7 +127,7 @@ public class MainActivity extends Activity {
 					Log.d(TAG, "Stopped WifiScannerThread");
 					return;
 				}
-				myWifiMan.startScan();
+				wifiManager.startScan();
 			}
 		}
 	}
