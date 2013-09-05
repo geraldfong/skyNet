@@ -61,5 +61,3 @@ for i in range(4):
     print('Avg: %.3f, Std: %.3f, Median: %.3f' % (avg, std, median))
 
     plt.close()
-
-
