@@ -22,24 +22,21 @@ public class WifiPollService extends IntentService {
 	@Override
 	public void onCreate() {
 		super.onCreate();
-		Log.d(TAG, "Starting te wifi poll service");
-		Log.d(TAG, Context.WIFI_SERVICE);
-		Log.d(TAG, "Below");
 		wifiManager = (WifiManager) this.getApplicationContext().getSystemService(Context.WIFI_SERVICE);
 		wifiReceiver = new WifiReceiver(wifiManager);
 	}
 
 	@Override
 	protected void onHandleIntent(Intent intent) {
-		registerReceiver(wifiReceiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
-		
 		int numMin = intent.getIntExtra("numMin", 1);
 		String experiment = intent.getStringExtra("experiment");
+		
 		wifiReceiver.setExperiment(experiment);
-		Log.d(TAG, "Num min " + numMin);
 		long curTime = System.currentTimeMillis()/1000L;
 		long endTime = curTime + numMin * 60;
-		Log.d(TAG, "Started WifiScannerThread");
+		
+		registerReceiver(wifiReceiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
+		Log.d(TAG, "Starting to scan");
 		while (System.currentTimeMillis()/1000L < endTime) {
 			try {
 				Thread.sleep(intervalMs);
@@ -50,8 +47,7 @@ public class WifiPollService extends IntentService {
 			wifiManager.startScan();
 		}
 		Log.d(TAG, "Finished scanning");
-		
-		
+		unregisterReceiver(wifiReceiver);	
 	}
 	
 	

@@ -3,7 +3,6 @@ package com.skynet.wifimonitor;
 import java.util.List;
 import java.util.Locale;
 
-import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -28,18 +27,15 @@ public class WifiReceiver extends BroadcastReceiver {
 	public WifiReceiver(WifiManager wifiManager) {
 		this.wifiManager = wifiManager;
 		this.webRequester = new WebRequester();
-		this.experiment = "blah";
+		this.experiment = "";
 	}
 	
 	public void setExperiment(String experiment) {
-		Log.d(TAG, "Setting experiment to " + experiment);
 		this.experiment = experiment;
 	}
 	
 	@Override
 	public void onReceive(Context context, Intent intent) {
-		Log.d(TAG, "Received data");
-
 		try {
 			List<ScanResult> scanResults = wifiManager.getScanResults();
 			for (ScanResult scanResult : scanResults) {
@@ -47,11 +43,9 @@ public class WifiReceiver extends BroadcastReceiver {
 					JSONObject data = new JSONObject();
 					data.put("timestamp", System.currentTimeMillis() / 1000L);
 					data.put("experiment", this.experiment);
-					Log.d(TAG, "Current experiment is: " + this.experiment);
 					data.put("sensor_id", scanResult.SSID);
 					data.put("value", scanResult.level);
 					data.put("sensor_type", "wifi");
-					Log.d(TAG, "Sending data" + data.toString());
 					webRequester.sendPost(url, "data=" + data.toString());
 				}
 			}
