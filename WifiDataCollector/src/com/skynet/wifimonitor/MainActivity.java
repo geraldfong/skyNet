@@ -3,6 +3,7 @@ package com.skynet.wifimonitor;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.Intent;
 import android.content.IntentFilter;
 import android.net.wifi.WifiManager;
 import android.os.Bundle;
@@ -41,8 +42,7 @@ public class MainActivity extends Activity {
 		start = (Button) findViewById(R.id.start);
 		setListeners();
 
-		wifiReceiver = new WifiReceiver(wifiManager);
-		registerReceiver(wifiReceiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
+		//wifiReceiver = new WifiReceiver(wifiManager);
 	}
 
 	private void setListeners() {
@@ -61,8 +61,15 @@ public class MainActivity extends Activity {
 					new AlertDialog.Builder(MainActivity.this).setMessage("Couldn't parse the minutes! Make sure you have a number there.").show();
 					return;
 				}
-				wifiReceiver.setExperiment(experiment);
-				scannerThread = new WifiScannerThread();
+
+				Intent wifiServiceIntent = new Intent(MainActivity.this, WifiPollService.class);
+				//wifiReceiver.setExperiment(experiment);
+				wifiServiceIntent.putExtra("numMin", numMin);
+				wifiServiceIntent.putExtra("experiment", experiment);
+				MainActivity.this.startService(wifiServiceIntent);
+				
+				//wifiReceiver.setExperiment(experiment);
+				/*scannerThread = new WifiScannerThread();
 				scannerThread.start();
 				start.setText("Running...");
 				start.setEnabled(false);
@@ -76,7 +83,7 @@ public class MainActivity extends Activity {
 						start.setText("Start");
 						start.setEnabled(true);
 					}
-				}, numMin * 60 * 1000L);
+				}, numMin * 60 * 1000L);*/
 			}
 		});
 	}
@@ -94,6 +101,7 @@ public class MainActivity extends Activity {
 			Log.d(TAG, "Interrupting thread in onPause()");
 			scannerThread.interrupt();
 		}
+		//unregisterReceiver(wifiReceiver);
 		super.onPause();
 	}
 
@@ -104,6 +112,7 @@ public class MainActivity extends Activity {
 			scannerThread = new WifiScannerThread();
 			scannerThread.start();
 		}
+		//registerReceiver(wifiReceiver, new IntentFilter(WifiManager.SCAN_RESULTS_AVAILABLE_ACTION));
 		super.onResume();
 	}
 

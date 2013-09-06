@@ -16,7 +16,7 @@ import android.util.Log;
 
 public class WifiReceiver extends BroadcastReceiver {
 	private static String TAG = "WifiReceiver";
-	private static String url = "http://requestb.in/1i2r7kn1";
+	private static String url = "http://54.215.14.147:5000/data";
 
 	private static String currentSSID = "skynet";
 	
@@ -28,32 +28,30 @@ public class WifiReceiver extends BroadcastReceiver {
 	public WifiReceiver(WifiManager wifiManager) {
 		this.wifiManager = wifiManager;
 		this.webRequester = new WebRequester();
-		this.experiment = "";
+		this.experiment = "blah";
 	}
 	
 	public void setExperiment(String experiment) {
+		Log.d(TAG, "Setting experiment to " + experiment);
 		this.experiment = experiment;
 	}
 	
 	@Override
 	public void onReceive(Context context, Intent intent) {
-		JSONObject data = new JSONObject();
 		Log.d(TAG, "Received data");
 
 		try {
-			// unix time
-			data.put("time", System.currentTimeMillis() / 1000L);
-	
 			List<ScanResult> scanResults = wifiManager.getScanResults();
-			JSONArray wifiData = new JSONArray();
 			for (ScanResult scanResult : scanResults) {
 				if ((scanResult.SSID.toLowerCase(Locale.US)).equals(currentSSID)) {
-					JSONObject datum = new JSONObject();
-					datum.put("timestamp", System.currentTimeMillis() / 1000L);
-					//datum.put("experiment", this.experiment);
-					datum.put("sensor_id", scanResult.SSID);
-					datum.put("value", scanResult.level);
-					datum.put("sensor_type", "wifi");
+					JSONObject data = new JSONObject();
+					data.put("timestamp", System.currentTimeMillis() / 1000L);
+					data.put("experiment", this.experiment);
+					Log.d(TAG, "Current experiment is: " + this.experiment);
+					data.put("sensor_id", scanResult.SSID);
+					data.put("value", scanResult.level);
+					data.put("sensor_type", "wifi");
+					Log.d(TAG, "Sending data" + data.toString());
 					webRequester.sendPost(url, "data=" + data.toString());
 				}
 			}

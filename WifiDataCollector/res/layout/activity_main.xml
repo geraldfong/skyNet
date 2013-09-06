@@ -15,7 +15,7 @@
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:ems="10"
-        android:inputType="number" >
+        android:inputType="text" >
 
         <requestFocus />
     </EditText>
