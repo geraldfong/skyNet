@@ -9,13 +9,13 @@
     tools:context=".MainActivity" >
 
     <EditText
-        android:id="@+id/numFeet"
+        android:id="@+id/experiment"
         android:layout_width="100dp"
         android:layout_height="wrap_content"
         android:layout_alignParentLeft="true"
         android:layout_alignParentTop="true"
         android:ems="10"
-        android:inputType="number" >
+        android:inputType="text" >
 
         <requestFocus />
     </EditText>
@@ -24,17 +24,17 @@
         android:id="@+id/textView1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignBaseline="@+id/numFeet"
-        android:layout_alignBottom="@+id/numFeet"
-        android:layout_toRightOf="@+id/numFeet"
-        android:text="ft"
+        android:layout_alignBaseline="@+id/experiment"
+        android:layout_alignBottom="@+id/experiment"
+        android:layout_toRightOf="@+id/experiment"
+        android:text="experiment"
         android:textAppearance="?android:attr/textAppearanceSmall" />
 
     <EditText
         android:id="@+id/numMinutes"
         android:layout_width="100dp"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/numFeet"
+        android:layout_below="@+id/experiment"
         android:ems="10"
         android:inputType="number" />
 
