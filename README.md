@@ -7,7 +7,7 @@ If you are just getting a client running, then you will need to cd into the "mac
 This will run a webpy server on port 8080. Next you will need to reverse ssh tunnel into a
 computer running the server.
 
-    ~ ssh -R 9997:localhost:8080 ubuntu@54.241.33.105
+    ~ ssh -R 9997:localhost:8080 ubuntu@54.215.14.147
 
 Next ssh into the server and make sure the server is running. If so, you should be good to go!
 
