@@ -1,8 +1,6 @@
 package com.skynet.wifimonitor;
 
-import java.io.BufferedInputStream;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.OutputStreamWriter;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
@@ -34,7 +32,7 @@ public class WebRequester {
 
 	private class RequestSender extends AsyncTask<URLData, Integer, Integer> {
 		@Override
-		protected Integer doInBackground(URLData... urlDatas) { // proper english? psh
+		protected Integer doInBackground(URLData... urlDatas) {
 			for (URLData urlData : urlDatas) {
 				try {
 					URL url = new URL(urlData.url);

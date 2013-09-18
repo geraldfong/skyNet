@@ -1,26 +1,26 @@
-from flask import Flask
-from flask import request
+from flask import request, Flask
 from pymongo import MongoClient
 import json
 
 app = Flask(__name__)
 
-@app.route('/')
-def hello_world():
-  return 'Hello World!'
-
 @app.route('/data', methods=['POST'])
-def hande_data():
+def handle_data():
   json_data = request.form['data']
   decoded = json.loads(json_data)
-  sensor_type = decoded['sensor_type']
-  value = decoded['value']
-  timestamp = decoded['timestamp']
-  db = client['sensor_db']
-  sensor_collection = db['sensor_data']
-  document_data = {'sensor_type': sensor_type, 'value': value, 'timestamp': timestamp}
-  sensor_collection.insert(document_data) 
-  return "OK"
+
+  # sensor_type - the type of sensor, ie wifi, accelerometer, gyro, etc.
+  # sensor_id - the id of the specific sensor, ie x-direction, y-direction, SKYNET, skynet
+  # value - the data value of interest such as signal strength from wifi
+  # timestamp - a timestamp in seconds from unix
+  # experiment - hand picked experiment name which is later used to generate graphs with
+  expected_keys = ('sensor_type', 'sensor_id', 'value', 'timestamp', 'experiment')
+  if any(key not in decoded for key in expected_keys):
+    return 'ERROR: Malformed json; json needs to have [%s]\n' % (' '.join(expected_keys))
+
+  sensor_collection = client['sensor_db']['sensor_data']
+  sensor_collection.insert(decoded) 
+  return "OK\n"
 
 if __name__ == '__main__':
   client = MongoClient()
