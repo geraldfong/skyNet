@@ -122,7 +122,7 @@ public class MainActivity extends Activity {
 		// numDegrees.set((maxAbsX - xrot))
 		float deg = getDegree();
 		numDegrees.setText(deg+"");
-		// mRequester.sendPost(url, "{ \"degrees\" : " + deg + "}");
+		mRequester.sendPost(url, "{ \"degrees\" : " + deg + "}");
 	}
 
 	private class RotationListener implements SensorEventListener {
