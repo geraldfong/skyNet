@@ -9,14 +9,15 @@ past_imu = None
 cur_imu = None
 
 # The url of the ssh tunnel hole used to control gesture devices
-hole_url = 'http://localhost:9996'
+hole_url = 'http://localhost:9994'
 light_url = 'https://agent.electricimp.com/3zuteAE-YCQR'
 
 cur_degree = 150
 highest_deg = 120
 
-computer_orientation = 100
-lightbulb_orientation = 50
+computer_orientation = 245 
+lightbulb_orientation = 190
+speaker_orientation = 300
 
 light_on = False
 
@@ -44,11 +45,11 @@ def imu():
     percent = (past_imu + highest_deg) / (highest_deg * 2)
 
   if percent is not None:
-    if within_deg(cur_degree, 150):
-      bright_val = percent * percent
-      command = '%s/on?brightness=%2.1f' % (light_url, bright_val)
-      urllib2.urlopen(command)
-    elif within_deg(cur_degree, 300):
+    #if within_deg(cur_degree, 150):
+    #  bright_val = percent * percent
+    #  command = '%s/on?brightness=%2.1f' % (light_url, bright_val)
+    #  urllib2.urlopen(command)
+    if within_deg(cur_degree, speaker_orientation):
       command = '%s/changeVolume?volume=%3.2f' % (hole_url, percent * 8)
       urllib2.urlopen(command)
 
@@ -60,27 +61,41 @@ def gesture():
     return "Need to have orientation data!"
 
   gesture = request.form['data']
+  print(gesture)
+  print(cur_degree)
   if gesture == 'LEFT' and within_deg(cur_degree, computer_orientation):
     urllib2.urlopen('%s/switchDeskLeft' % (hole_url))
   elif gesture == 'RIGHT' and within_deg(cur_degree, computer_orientation):
+    print("Firing right")
     urllib2.urlopen('%s/switchDeskRight' % (hole_url))
-  elif (gesture == 'PUSH' or gesture == 'PULL') and within_deg(cur_degree, lightbulb_orientation):
+  elif (gesture == 'PUSH') and within_deg(cur_degree, lightbulb_orientation):
     global light_on
     if light_on:
       urllib2.urlopen('https://agent.electricimp.com/3zuteAE-YCQR/off').read()
     else:
       urllib2.urlopen('https://agent.electricimp.com/3zuteAE-YCQR/on').read()
     light_on = not light_on
+  elif (gesture == 'WAVE'):
+    global light_on
+    urllib2.urlopen('https://agent.electricimp.com/3zuteAE-YCQR/off').read()
+    command = '%s/changeVolume?volume=%3.2f' % (hole_url, 0)
+    urllib2.urlopen(command)
+    command = '%s/lock' % (hole_url)
+    urllib2.urlopen(command)
+    light_on = False
+
+
 
   return 'Success'
 
 @app.route('/direction', methods=['POST'])
 def direction():
   global cur_degree
-  cur_degree = float(request.data)
+  cur_degree = float(request.form['data'])
+  print(cur_degree)
   return "OK"
 
-def within_deg(degrees, cur_degrees, delta=50):
+def within_deg(degrees, cur_degrees, delta=30):
   diff = abs(degrees - cur_degrees)
   return diff < delta or abs(diff - 360) < delta
 
