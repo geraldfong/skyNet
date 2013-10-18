@@ -18,7 +18,7 @@ import android.widget.TextView;
 public class MainActivity extends Activity {
 
 	private static String TAG = "MainActivity";
-	private static String url = "http://54.241.33.105:8080/direction";
+	private static String url = "http://54.215.14.147:8080/direction";
 
 	private SensorManager mSensorManager;
 	private RotationListener mRotationListener;
@@ -122,7 +122,7 @@ public class MainActivity extends Activity {
 		// numDegrees.set((maxAbsX - xrot))
 		float deg = getDegree();
 		numDegrees.setText(deg+"");
-		// mRequester.sendPost(url, "{ \"degrees\" : " + deg + "}");
+		mRequester.sendPost(url, "data=" + deg);
 	}
 
 	private class RotationListener implements SensorEventListener {
